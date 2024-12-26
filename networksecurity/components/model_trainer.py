@@ -51,8 +51,7 @@ class ModelTrainer:
 
 
         
-    def train_model(self, X_train, y_train, x_test, y_test):
-
+    def train_model(self,X_train,y_train,x_test,y_test):
         models = {
                 "Random Forest": RandomForestClassifier(verbose=1),
                 "Decision Tree": DecisionTreeClassifier(),
@@ -85,9 +84,11 @@ class ModelTrainer:
                 'learning_rate':[.1,.01,.001],
                 'n_estimators': [8,16,32,64,128,256]
             }
+            
         }
         model_report:dict=evaluate_models(X_train=X_train,y_train=y_train,X_test=x_test,y_test=y_test,
                                           models=models,param=params)
+        
         ## To get best model score from dict
         best_model_score = max(sorted(model_report.values()))
 
@@ -100,23 +101,26 @@ class ModelTrainer:
         y_train_pred=best_model.predict(X_train)
 
         classification_train_metric=get_classification_score(y_true=y_train,y_pred=y_train_pred)
-
-        ## Track the experiments with MLflow
-
-        self.track_mlflow(best_model.classification_train_metric)
         
+        ## Track the experiements with mlflow
+        self.track_mlflow(best_model,classification_train_metric)
+
 
         y_test_pred=best_model.predict(x_test)
         classification_test_metric=get_classification_score(y_true=y_test,y_pred=y_test_pred)
-        self.track_mlflow(best_model.classification_test_metric)
+
+        self.track_mlflow(best_model,classification_test_metric)
+
         preprocessor = load_object(file_path=self.data_transformation_artifact.transformed_object_file_path)
             
         model_dir_path = os.path.dirname(self.model_trainer_config.trained_model_file_path)
         os.makedirs(model_dir_path,exist_ok=True)
 
-        Network_Model = NetworkModel(preprocessor=preprocessor, model=best_model)
+        Network_Model=NetworkModel(preprocessor=preprocessor,model=best_model)
         save_object(self.model_trainer_config.trained_model_file_path,obj=NetworkModel)
-
+        #model pusher
+        save_object("final_model/model.pkl",best_model)
+        
 
         ## Model Trainer Artifact
         model_trainer_artifact=ModelTrainerArtifact(trained_model_file_path=self.model_trainer_config.trained_model_file_path,
@@ -126,6 +130,13 @@ class ModelTrainer:
         logging.info(f"Model trainer artifact: {model_trainer_artifact}")
         return model_trainer_artifact
 
+
+        
+
+
+       
+    
+    
         
     def initiate_model_trainer(self)->ModelTrainerArtifact:
         try:
@@ -145,6 +156,8 @@ class ModelTrainer:
 
             model_trainer_artifact=self.train_model(x_train,y_train,x_test,y_test)
             return model_trainer_artifact
+
+            
         except Exception as e:
             raise NetworkSecurityException(e,sys)
 
