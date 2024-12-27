@@ -4,7 +4,7 @@ This repository contains the complete code and implementation details for an end
 
 ## Architecture
 
-![Project Architecture](images/Project_Architecture.png)
+![Architecture](images/Project_Architecture.png)
 
 
 ## Project Structure & Environment Setup
@@ -70,7 +70,7 @@ This repository contains the complete code and implementation details for an end
 
 1. **Clone the Repository**:
    ```bash
-   https://github.com/wrvarun-96/End-to-End-MLOps-Project-with-ETL-Pipeline---Building-Network-Security-System.git
+   https://github.com/Famz21/SecuMLOps-AI-Driven-Threat-Detection.git
 2. Set Up the Environment: Follow the instructions in setup.py to install required dependencies.
 3. Run the ETL Pipeline: Use the following command to start the data ingestion process:
    ```python
