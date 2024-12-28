@@ -7,6 +7,7 @@ uri = "mongodb+srv://ViraRithy:<password>@cluster0.vfn5d.mongodb.net/?retryWrite
 client = MongoClient(uri)
 
 # Send a ping to confirm a successful connection
+
 try:
     client.admin.command('ping')
     print("Pinged your deployment. You successfully connected to MongoDB!")
